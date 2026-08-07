@@ -1,17 +1,22 @@
 # ✋ Rock Paper Scissors Hand Gesture Recognition
 
-A real-time Rock-Paper-Scissors hand gesture recognition system built using **MediaPipe**, **Artificial Neural Networks (ANN)**, **OpenCV**, and **Streamlit**. The application detects hand landmarks from webcam input, preprocesses them, and predicts the corresponding gesture.
+A real-time Rock-Paper-Scissors hand gesture recognition application built using **MediaPipe Hand Landmarker**, **Artificial Neural Network (ANN)**, **OpenCV**, **Streamlit**, and **WebRTC**.
+
+The system detects hand landmarks from webcam input, preprocesses the landmark coordinates, and classifies hand gestures into Rock, Paper, or Scissors using a trained ANN model.
 
 ---
 
 ## 📌 Features
 
 - Real-time hand gesture recognition using webcam
-- Hand landmark extraction using MediaPipe
+- MediaPipe Hand Landmarker based hand detection
+- 21 hand landmark extraction (63 numerical features)
 - ANN-based gesture classification
-- Streamlit web application
-- OpenCV-based live prediction
-- Model trained on normalized hand landmark features
+- Real-time prediction using Streamlit WebRTC
+- OpenCV-based gameplay mode
+- Confidence score display
+- One-hand gesture prediction
+- Two-hand detection support for game mode
 
 ---
 
@@ -19,9 +24,10 @@ A real-time Rock-Paper-Scissors hand gesture recognition system built using **Me
 
 - Python
 - TensorFlow / Keras
-- MediaPipe
+- MediaPipe Tasks API
 - OpenCV
 - Streamlit
+- Streamlit-WebRTC
 - NumPy
 - Scikit-learn
 - Joblib
@@ -33,9 +39,10 @@ A real-time Rock-Paper-Scissors hand gesture recognition system built using **Me
 ```
 Rock_Paper_Scissor/
 │
-├── app.py
-├── opencv_game.py
-├── opencv_live.py
+├── app2.py                  # Streamlit application
+├── webrtc_live.py           # Live webcam gesture prediction
+├── webrtc_game.py           # Rock Paper Scissors game mode
+│
 ├── requirements.txt
 ├── README.md
 ├── .gitignore
@@ -44,101 +51,179 @@ Rock_Paper_Scissor/
 │   ├── final_model.keras
 │   ├── scaler.pkl
 │   ├── label_encoder.pkl
-│   ├── hand_landmarker.task
+│   └── hand_landmarker.task
 │
 ├── notebooks/
 │   └── *.ipynb
 │
-├── utils/
-│   └── preprocessing.py
-│   ├── prediction.py
-│   ├── preprocessing.py
+└── utils/
+    ├── landmark_extraction.py
+    ├── prediction.py
+    └── preprocessing.py
 ```
 
 ---
 
-## 📊 Workflow
+## 🔄 Workflow
 
-1. Collect hand gesture images.
-2. Extract 21 hand landmarks using MediaPipe.
-3. Normalize landmark coordinates.
-4. Scale the features using StandardScaler.
-5. Train an Artificial Neural Network.
-6. Save the trained model and preprocessing objects.
-7. Perform real-time predictions using webcam input.
+1. Collect Rock-Paper-Scissors hand gesture images.
+2. Extract hand landmarks using MediaPipe Hand Landmarker.
+3. Convert landmarks into numerical features:
+   - 21 landmarks
+   - x, y, z coordinates
+   - Total 63 features
+4. Normalize and scale landmark features.
+5. Train an Artificial Neural Network classifier.
+6. Save:
+   - ANN model
+   - StandardScaler
+   - Label Encoder
+7. Use webcam input for real-time gesture prediction.
 
 ---
 
 ## 📁 Dataset
 
-The dataset is **not included** in this repository due to its size.
+The dataset is not included in this repository because of its size.
 
-Download the dataset from Kaggle:
+Dataset source:
 
-**Rock Paper Scissors Dataset**
+Rock Paper Scissors Dataset (Kaggle)
 
-> https://www.kaggle.com/datasets/sanikamal/rock-paper-scissors-dataset
+```
+https://www.kaggle.com/datasets/sanikamal/rock-paper-scissors-dataset
+```
 
-After downloading, place it inside the project directory:
+Dataset structure:
 
 ```
 dataset/
+│
 ├── train/
+│   ├── rock/
+│   ├── paper/
+│   └── scissors/
+│
 ├── validation/
+│   ├── rock/
+│   ├── paper/
+│   └── scissors/
+│
 └── test/
+    ├── rock/
+    ├── paper/
+    └── scissors/
 ```
 
 ---
 
 ## 🚀 Installation
 
-Clone the repository
+Clone the repository:
 
 ```bash
 git clone https://github.com/vaishnavishetty2264/Rock_Paper_Scissors.git
 ```
 
-Move into the project
+Navigate into the project:
 
 ```bash
-cd <Rock_Paper_Scissors>
+cd Rock_Paper_Scissors
 ```
 
-Install dependencies
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Run the Streamlit application
+Run the Streamlit application:
 
 ```bash
-streamlit run app.py
+streamlit run app2.py
 ```
 
 ---
 
-## 📈 Model
+## 🧠 Model Details
 
-The model is an Artificial Neural Network trained on hand landmark coordinates extracted using MediaPipe.
+The model is an **Artificial Neural Network (ANN)** trained on MediaPipe hand landmark features.
 
-Input Features:
-- 21 Hand Landmarks
-- 63 Numerical Features (x, y, z)
+### Input:
 
-Output Classes:
-- ✋ Paper
-- ✊ Rock
-- ✌️ Scissors
+- 21 hand landmarks
+- 63 numerical features:
+  - x-coordinate
+  - y-coordinate
+  - z-coordinate
+
+### Output Classes:
+
+| Gesture | Class |
+|---|---|
+| ✋ Paper | Paper |
+| ✊ Rock | Rock |
+| ✌️ Scissors | Scissors |
+
+---
+
+## 🎮 Application Modes
+
+### 1. Live Gesture Recognition
+
+File:
+
+```
+webrtc_live.py
+```
+
+Features:
+
+- Detects one hand
+- Extracts landmarks
+- Predicts gesture
+- Displays confidence score
+
+---
+
+### 2. Rock Paper Scissors Game
+
+File:
+
+```
+webrtc_game.py
+```
+
+Features:
+
+- Supports two-hand detection
+- Uses webcam interaction
+- Provides game-based gesture recognition
+
+---
+
+## 📦 Saved Model Files
+
+The following files are required for prediction:
+
+```
+model/
+│
+├── final_model.keras
+├── scaler.pkl
+├── label_encoder.pkl
+└── hand_landmarker.task
+```
 
 ---
 
 ## 🎯 Future Improvements
 
-- Improve prediction accuracy
-- Support two-hand detection
-- Deploy the application online
-- Extend to additional hand gestures
+- Improve model accuracy
+- Add more hand gesture classes
+- Improve deployment optimization
+- Add mobile support
+- Enhance real-time FPS performance
 
 ---
 
@@ -146,6 +231,8 @@ Output Classes:
 
 **Shetty Vaishnavi**
 
-GitHub: https://github.com/vaishnavishetty2264
+GitHub:  
+https://github.com/vaishnavishetty2264
 
-LinkedIn: https://www.linkedin.com/in/shetty-vaishnavi-338508259
+LinkedIn:  
+https://www.linkedin.com/in/shetty-vaishnavi-338508259
